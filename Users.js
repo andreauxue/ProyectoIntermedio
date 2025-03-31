@@ -9,6 +9,7 @@ class Users {
 }
 
 
+
 static async Put_User(req, res) {
     try {
       const { id, username, complete_name, email, team, password1, password2 } = req.body;
@@ -80,5 +81,14 @@ static async Put_User(req, res) {
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   }
+
+  static async Update_User(user) {
+      try {
+        await Database.update("users", user);
+        return { message: "Usuario actualizado correctamente" };
+      } catch (error) {
+        return { error: "Error al actualizar el usuario" };
+      }
+    }
 }
 
