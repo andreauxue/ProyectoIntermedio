@@ -9,7 +9,7 @@ class Users {
 }
 
 
-static async put_user(req, res) {
+static async Put_User(req, res) {
     try {
       const { id, username, complete_name, email, team, password1, password2 } = req.body;
 
@@ -57,6 +57,25 @@ static async put_user(req, res) {
       }
 
       return res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      return res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
+
+
+  static async Get_ListUsers(res) {
+    try {
+      const users = await Database.get_table_registers("users");
+
+      if (!users || users.length==0) {
+        return res.status(400).json({ error: "No se encontraron usuarios" });
+      }
+
+      const usersFiltered = users
+            .map(({password, ...user})=> user)
+            .sort((a,b)=> b.points - a.points);
+
+      return res.status(200).json(usersFiltered);
     } catch (error) {
       return res.status(500).json({ error: "Error interno del servidor" });
     }
