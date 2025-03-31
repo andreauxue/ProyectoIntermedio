@@ -33,7 +33,7 @@ static async Put_User(req, res) {
         password: hashedPassword,
       };
 
-      Database.Save('users', [userData]);
+      Database.Save("USERS", [userData]);
 
       return res.status(201).json({ message: "Usuario creado con éxito" });
     } catch (error) {
@@ -50,7 +50,7 @@ static async Put_User(req, res) {
         return res.status(400).json({ error: "El nombre de usuario es obligatorio" });
       }
 
-      const query = `SELECT * FROM users WHERE username = '${username}'`;
+      const query = `SELECT * FROM USERS WHERE USERNAME = '${username}'`;
       const user = await Database.Query(query);
 
       if (!user) {
@@ -66,7 +66,7 @@ static async Put_User(req, res) {
 
   static async Get_ListUsers(res) {
     try {
-      const users = await Database.get_table_registers("users");
+      const users = await Database.get_table_registers("USERS");
 
       if (!users || users.length==0) {
         return res.status(400).json({ error: "No se encontraron usuarios" });
@@ -84,7 +84,7 @@ static async Put_User(req, res) {
 
   static async Update_User(user) {
       try {
-        await Database.update("users", user);
+        await Database.update("USERS", user);
         return { message: "Usuario actualizado correctamente" };
       } catch (error) {
         return { error: "Error al actualizar el usuario" };
