@@ -90,5 +90,34 @@ static async Put_User(req, res) {
         return { error: "Error al actualizar el usuario" };
       }
     }
+
+
+
+  static async Login(req, res){
+    try{
+      const {username, password} = req.body;
+      if(!username || !password){
+        return res.status(400).json({error: "Faltan datos"});
+      }
+
+      const hashedPassword = await Auth.encode(password);
+
+      const query = `SELECT * FROM USERS WHERE USERNAME = '${username}'`;
+      const user = await Database.Query(query);
+
+      if(!user){
+        return res.status(401).json({error: "Usuario incorrecto"});
+      }
+
+      if(user.password != hashedPassword){
+        return res.status(401).json({error: "Contraseña incorrecta"});
+      }
+
+      const userJson = await Auth.create_json(user);
+      return res.status(200).json(userJson);
+    }catch(error){
+      return res.status(500).json({error: "Error interno del servidor"});
+    }
+  }
 }
 
