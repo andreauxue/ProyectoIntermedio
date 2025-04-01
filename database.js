@@ -28,13 +28,12 @@ class Database {
   async Save(table_name, content) {
     try {
       await this.conectar();
-      const isArray = Array.isArray(content) ? content : [content];
-      const keys = Object.keys(isArray[0]);
-      const placeholders = `(${keys.map(() => '?').join(', ')})`;
-      const sql = `INSERT INTO ${table_name} (${keys.join(', ')}) VALUES ${isArray.map(() => placeholders).join(', ')}`;
-      const values = isArray.flatMap(obj => keys.map(k => obj[k]));
-
+      const keys = Object.keys(content);
+      const values = Object.values(content);
+      const placeholders = keys.map(() => '?').join(', ');
+      const sql = `INSERT INTO ${table_name} (${keys.join(',')}) VALUES (${placeholders})`;
       const result = await this.db.run(sql, values);
+      await this.cerrar();
       return result;
     } catch (error) {
       return { error: error.message };
@@ -45,7 +44,7 @@ class Database {
 
   // Método: Update (table_name, content)
   // Actualiza un registro por ID
-  async Update(table_name, content) {
+  async update(table_name, content) {
     try {
       await this.conectar();
       const { id, ...campos } = content;
@@ -80,17 +79,13 @@ class Database {
   }
 
   // Método: Query (query: string)
-  async Query(sql, params = []) {
-    try {
-      await this.conectar();
-      const rows = await this.db.all(sql, params);
-      return rows;
-    } catch (error) {
-      return { error: error.message };
-    } finally {
-      await this.cerrar();
-    }
+  async query(query, params = []) {
+    await this.conectar();
+    const rows = await this.db.all(query, params);
+    await this.cerrar();
+    return rows;
   }
+  
 }
 
 module.exports = Database;
