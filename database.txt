@@ -1,0 +1,33 @@
+CREATE DATABASE ProyectoIntermedio;
+
+USE ProyectoIntermedio;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    complete_name VARCHAR(255) NOT NULL,
+    team_number INT NOT NULL,
+    user_name VARCHAR(100) UNIQUE NOT NULL,
+    points INT DEFAULT 0,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE games (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_user_1 INT NOT NULL,
+    id_user_2 INT NOT NULL,
+    move_user_1 VARCHAR(50),
+    move_user_2 VARCHAR(50),
+    game_pool_id INT NOT NULL,
+    FOREIGN KEY (id_user_1) REFERENCES users(id),
+    FOREIGN KEY (id_user_2) REFERENCES users(id),
+    FOREIGN KEY (game_pool_id) REFERENCES games_pool(id),
+    
+);
+
+CREATE TABLE games_pool (
+
+id INT PRIMARY KEY AUTO_INCREMENT,
+sentence TEXT
+
+)
+
