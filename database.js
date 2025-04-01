@@ -1,105 +1,96 @@
+const sqlite3 = require('sqlite3');
+const { open } = require('sqlite');
+
 class Database {
+  constructor(dbPath) {
+    this.dbPath = dbPath;
+    this.db = null;
+  }
 
-    constructor(connection, configDB) {
-        this.connection = connection;
-        this.configDB = configDB;
+  async conectar() {
+    if (!this.db) {
+      this.db = await open({
+        filename: this.dbPath,
+        driver: sqlite3.Database
+      });
     }
+  }
 
-    /**
-     * Establece la conexión con la base de datos.
-     * @returns {void}
-     */
-    async conectar() {
-        try {
-            this.connection = await mysql.createConnection(this.configDB);
-            const [filas] = await conexion.execute('SELECT * FROM users');
-            console.log(filas);
-        } catch (error) {
-            throw new Error(`Error al conectar a la base de datos: ${error.message}`);
-        }
+  async cerrar() {
+    if (this.db) {
+      await this.db.close();
+      this.db = null;
     }
+  }
 
-    /**
-     * Cierra la conexión con la base de datos.
-     * @returns {void}
-     */
-    async cerrar() {
-        try {
-            if (this.connection && this.connection.state !== 'disconnected') {
-                await this.connection.end();
-                console.log('Conexión cerrada con la base de datos.');
-                this.connection = null;
-            }
-        } catch (error) {
-            throw new Error(`Error al cerrar la conexión con la base de datos: ${error.message}`);
-        }
+  // Método: Save (table_name, content)
+  // Inserta uno o varios registros en la tabla
+  async Save(table_name, content) {
+    try {
+      await this.conectar();
+      const isArray = Array.isArray(content) ? content : [content];
+      const keys = Object.keys(isArray[0]);
+      const placeholders = `(${keys.map(() => '?').join(', ')})`;
+      const sql = `INSERT INTO ${table_name} (${keys.join(', ')}) VALUES ${isArray.map(() => placeholders).join(', ')}`;
+      const values = isArray.flatMap(obj => keys.map(k => obj[k]));
+
+      const result = await this.db.run(sql, values);
+      return result;
+    } catch (error) {
+      return { error: error.message };
+    } finally {
+      await this.cerrar();
     }
+  }
 
-    /**
-     * Guarda registros en una tabla de la base de datos.
-     * @param {string} table_name - Nombre de la tabla donde se insertarán los datos.
-     * @param {Array} contents - Contenido a insertar en la tabla.
-     * @returns {Object|Error} - Resultado de la operación o un objeto con el mensaje de error.
-     */
-    async Save(table_name, contents) {
-        try {
-            const query = 'INSERT INTO ${table_name} VALUES ?';
-            const [result] = await this.connection.execute(query, [contents]);
-            return result;
-        } catch (error) {
-            return { error: error.message };
-        }
+  // Método: Update (table_name, content)
+  // Actualiza un registro por ID
+  async Update(table_name, content) {
+    try {
+      await this.conectar();
+      const { id, ...campos } = content;
+      const keys = Object.keys(campos);
+      const values = Object.values(campos);
+      const setSQL = keys.map(k => `${k} = ?`).join(', ');
+      const sql = `UPDATE ${table_name} SET ${setSQL} WHERE id = ?`;
+
+      values.push(id); // para el WHERE
+
+      const result = await this.db.run(sql, values);
+      return result;
+    } catch (error) {
+      return { error: error.message };
+    } finally {
+      await this.cerrar();
     }
+  }
 
-    /**
-     * Actualiza un registro en una tabla de la base de datos.
-     * @param {string} table_name - Nombre de la tabla donde se actualizarán los datos.
-     * @param {Object} user - Objeto que contiene los datos a actualizar, incluyendo el campo 'id'.
-     * @returns {Object|Error} - Resultado de la operación o un objeto con el mensaje de error.
-     */
-    async Update(table_name, user) {
-        const { id, ...campos } = user;
-        const columnas = Object.keys(campos);
-        const valores = Object.values(campos);
-    
-        const set = columnas.map(col => '${col} = ?').join(', ');
-        const query = 'UPDATE ${table_name} SET ${set} WHERE id = ?';
-    
-        valores.push(id);
-    
-        return await this.connection.execute(query, valores);
+  // Método: Get_table_registers (table_name)
+  async Get_table_registers(table_name) {
+    try {
+      await this.conectar();
+      const sql = `SELECT * FROM ${table_name}`;
+      const rows = await this.db.all(sql);
+      return rows;
+    } catch (error) {
+      return { error: error.message };
+    } finally {
+      await this.cerrar();
     }
-    
-    /**
-     * Obtiene todos los registros de una tabla.
-     * @param {string} table_name - Nombre de la tabla de la cual se obtendrán los registros.
-     * @returns {Array|Error} - Lista de registros o un objeto con el mensaje de error.
-     */
-    async Get_table_registers(table_name) {
-        try {
-            const query = 'SELECT * FROM ${table_name}';
-            const [rows] = await this.connection.execute(query);
-            return rows;
-        } catch (error) {
-            return { error: error.message };
-        }
+  }
+
+  // Método: Query (query: string)
+  async Query(sql, params = []) {
+    try {
+      await this.conectar();
+      const rows = await this.db.all(sql, params);
+      return rows;
+    } catch (error) {
+      return { error: error.message };
+    } finally {
+      await this.cerrar();
     }
-
-    /**
-     * Ejecuta una consulta SQL personalizada.
-     * @param {string} sql - Consulta SQL a ejecutar.
-     * @returns {Array|Error} - Resultado de la consulta o un objeto con el mensaje de error.
-     */
-    async Query(sql) {
-        try {
-          await this.conectar();
-          const [rows] = await this.connection.execute(sql);
-          return rows;
-        } catch (error) {
-          return { error: error.message };
-        } finally {
-          await this.cerrar();
-        }
-      }
-
+  }
 }
+
+module.exports = Database;
