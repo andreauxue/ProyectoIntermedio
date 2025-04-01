@@ -1,10 +1,11 @@
 const path = require('path');
-const Database = require('./Database');
-const Users = require('./Users');
-const Auth = require('./Auth'); // Asegúrate de tener Auth.js en el mismo directorio
+const Database = require('../BasedeDatos/database');
+const Users = require('../Controladores/Users');
+const Auth = require('../Controladores/Auth');
 
+// Ruta correcta al archivo .db
 const config = {
-  db: path.join(__dirname, 'ProyectoIntermedio.db')
+  db: path.join(__dirname, '../BasedeDatos/ProyectoIntermedio.db')
 };
 
 async function probar() {
