@@ -1,0 +1,25 @@
+{
+  "name": "proyecto-intermedio",
+  "version": "1.0.0",
+  "description": "Sistema de login, registro y rutas protegidas con Node.js y SQLite para el dilema del prisionero",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "login",
+    "registro",
+    "jwt",
+    "sqlite",
+    "nodejs",
+    "express"
+  ],
+  "author": "Andrea Uxue Amaya Navarrete",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.6"
+  }
+}
