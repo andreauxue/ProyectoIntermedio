@@ -1,0 +1,133 @@
+INSERT INTO games_pool (sentence, weight_matrix) VALUES
+(
+    'Dos sospechosos son arrestados. Si uno confiesa y el otro no, el que confiesa queda libre y el otro recibe 10 años. Si ambos confiesan, ambos reciben 5 años. Si ninguno confiesa, ambos reciben 1 año.',
+    '{
+        "true": {
+            "true": 5,
+            "false": 0
+        },
+        "false": {
+            "true": 10,
+            "false": 1
+        }
+    }'
+),
+(
+    'Dos empresas compiten. Si ambas invierten en publicidad, ambas obtienen ganancias moderadas. Si una invierte y la otra no, la que invierte pierde dinero y la otra gana mucho. Si ninguna invierte, ambas obtienen ganancias bajas.',
+    '{
+        "true": {
+            "true": 2,
+            "false":-1
+        },
+        "false": {
+            "true": 4,
+            "false": 1
+        }
+    }'
+),
+(
+    'Dos países deciden si contaminar o no. Si ambos contaminan, ambos sufren daños moderados. Si uno contamina y el otro no, el que contamina se beneficia y el otro sufre mucho. Si ninguno contamina, ambos se benefician.',
+    '{
+        "true": {
+            "true": 1,
+            "false":-4
+        },  
+        "false": {
+            "true": 3,
+            "false":-2
+        }
+    }'
+),
+(
+    'Dos ladrones roban un banco. Si uno testifica contra el otro, el que testifica queda libre y el otro recibe 20 años. Si ambos testifican, ambos reciben 10 años. Si ninguno testifica, ambos reciben 2 años.',
+    '{
+        "true": {
+            "true": 1,
+            "false": 0
+        },
+        "false": {
+            "true": 2,
+            "false": 3
+        }
+    }'
+),
+(
+    'Dos vecinos comparten un pozo. Si ambos lo usan con moderación, ambos tienen suficiente agua. Si uno abusa del pozo, el que abusa tiene mucha agua y el otro se queda sin. Si ambos abusan, ambos se quedan sin agua.',
+    '{
+        "true": {
+            "true": 4,
+            "false": 0
+        },
+        "false": {
+            "true": 5,
+            "false":-1
+        }
+    }'
+),
+(
+    'Dos pescadores comparten un lago. Si ambos pescan con moderación, ambos tienen buena pesca. Si uno pesca en exceso, el que pesca en exceso tiene mucha pesca y el otro se queda sin. Si ambos pescan en exceso, ambos tienen poca pesca.',
+    '{
+        "true": {
+            "true": 3,
+            "false": 0
+        },
+        "false": {
+            "true": 5,
+            "false": 1
+        }
+    }'
+),
+(
+    'Dos jugadores en un juego. Si ambos cooperan, ambos ganan puntos. Si uno coopera y el otro no, el que no coopera gana más puntos y el otro pierde. Si ninguno coopera, ambos pierden puntos.',
+    '{
+        "true": {
+            "true": 3,
+            "false":-2
+        },
+        "false": {
+            "true": 5,
+            "false":-1
+        }
+    }'
+),
+(
+    'Dos países en una guerra fría. Si ambos se arman, ambos gastan mucho dinero y están en peligro. Si uno se arma y el otro no, el que se arma tiene ventaja. Si ninguno se arma, ambos están seguros y ahorran dinero.',
+    '{
+        "true": {
+            "true": 2,
+            "false":-4
+        },
+        "false": {
+            "true": 4,
+            "false":-3
+        }
+        
+    }'
+),
+(
+    'Dos estudiantes en un examen. Si ambos cooperan y no se copian, ambos obtienen buenas notas. Si uno se copia del otro, el que se copia obtiene una nota excelente y el otro una mala. Si ambos se copian, ambos obtienen notas mediocres.',
+    '{
+        "true": {
+            "true": 3,
+            "false":-2
+        },
+        "false": {
+            "true": 5,
+            "false": 1
+        }
+    }'
+),
+-- no sé porque este me mandó error 
+-- (
+--     'Dos granjeros comparten un pastizal. Si ambos permiten que sus animales pasten con moderación, ambos tienen pasto suficiente. Si uno permite que sus animales pasten en exceso, el que abusa tiene más pasto y el otro se queda sin. Si ambos abusan, ambos se quedan sin pasto.' ,
+--     '{
+--         "true": {
+--             "true": 2,
+--             "false":-1
+--         },
+--         "false": {
+--             "true": 4,
+--             "false": 0
+--         }
+--     }'
+-- ),

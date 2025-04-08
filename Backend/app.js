@@ -7,8 +7,12 @@ const Database = require('./BasedeDatos/database');
 const Users = require('./Controladores/Users');
 const Auth = require('./Controladores/Auth');
 
+const Games = require('./Controladores/Games');  
+
+
 const app = express();
 const PORT = 3000;
+
 
 // Middlewares
 app.use(cors());
@@ -19,6 +23,7 @@ app.use(express.static(path.join(__dirname, '../Frontend')));
 // Conexión a la base de datos
 const db = new Database(path.join(__dirname, './BasedeDatos/ProyectoIntermedio.db'));
 const users = new Users(db);
+const games = new Games(db);
 
 // Ruta POST /login
 app.post('/login', async (req, res) => {
@@ -102,7 +107,7 @@ app.get('/register', (req, res) => {
   });
 
 // Esta ruta está protegida, requiere autenticación
-app.get('/perfil', (req, res) => {
+app.get('/profile', (req, res) => {
     res.sendFile(path.join(__dirname, '../Frontend/profile.html'));
   });
   app.get('/api/perfil', verificarToken, async (req, res) => {
@@ -118,7 +123,71 @@ app.get('/perfil', (req, res) => {
       user: user
     });
   });
+
   
+  // Endpoint para obtener posibles oponentes
+app.get('/get-posible-oponents/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const result = await games.get_posibles_oponents(user_id);
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error al obtener los posibles oponentes:', error);
+    res.status(500).json({ error: 'Error al obtener los posibles oponentes' });
+  }
+});
+  
+  // Endpoint para obtener resultados del torneo
+app.get('/get-tournament-results', async (req, res) => {
+  try {
+    const result = await games.get_tournament_results();
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los resultados del torneo' });
+  }
+});
+  
+// Endpoint para registrar una nueva partida
+app.post('/match-register', async (req, res) => {
+  const { id_user_1, id_user_2 } = req.body;
+  try {
+    const result = await games.Post_Game(id_user_1, id_user_2);
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error al registrar la partida:', error);
+    res.status(500).json({ error: 'Error al registrar la partida' });
+  }
+});
+
+// Endpoint para recuperar partidas filtradas
+app.get('/matches/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const result = await games.Get_Game(user_id);
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error al recuperar las partidas en curso:', error);
+    res.status(500).json({ error: 'Error al recuperar las partidas en curso' });
+  }
+});
+
+// ebndpoint para guardar una jugada
+app.post('/post-trick/:match_id/:user_id/:trick_id', async (req, res) => {
+  const { match_id, user_id, trick_id } = req.params;
+  try {
+    const result = await games.Post_Trick(match_id, user_id, trick_id);
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error al actualizar la partida:', error);
+    res.status(500).json({ error: 'Error al actualizar la partida' });
+  }
+});
+
 
   
   
